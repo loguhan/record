@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-panel: var(--panel);
+  --color-panel-muted: var(--panel-muted);
+  --color-panel-muted-hover: var(--panel-muted-hover);
+  --color-border: var(--border);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-danger: var(--danger);
+  --color-danger-muted: var(--danger-muted);
+  --color-accent-soft: var(--accent-soft);
+  --color-scrollbar: var(--scrollbar);
+  --color-focus: var(--focus);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  --background: #f3f5f7;
+  --foreground: #11161a;
+  --panel: #ffffff;
+  --panel-muted: #eef2f4;
+  --panel-muted-hover: #e5eaee;
+  --border: #d8e0e5;
+  --muted-foreground: #65707a;
+  --accent: #0ea5e9;
+  --accent-hover: #0284c7;
+  --accent-soft: rgba(14, 165, 233, 0.14);
+  --accent-foreground: #ffffff;
+  --danger: #dc2626;
+  --danger-muted: rgba(220, 38, 38, 0.12);
+  --scrollbar: rgba(113, 128, 150, 0.45);
+  --focus: rgba(14, 165, 233, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --background: #111415;
+    --foreground: #f2f5f6;
+    --panel: #171b1c;
+    --panel-muted: #202526;
+    --panel-muted-hover: #272d2e;
+    --border: #313738;
+    --muted-foreground: #9aa4aa;
+    --accent: #38bdf8;
+    --accent-hover: #0ea5e9;
+    --accent-soft: rgba(56, 189, 248, 0.14);
+    --accent-foreground: #061116;
+    --danger: #f87171;
+    --danger-muted: rgba(248, 113, 113, 0.14);
+    --scrollbar: rgba(148, 163, 184, 0.45);
+    --focus: rgba(56, 189, 248, 0.5);
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(14, 165, 233, 0.2);
+}
