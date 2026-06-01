@@ -1,0 +1,127 @@
+name: native-release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "codex/**"
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-x64
+            os: windows-latest
+            binary: record-native.exe
+            artifact: Record-windows-x64.zip
+          - name: linux-x64
+            os: ubuntu-latest
+            binary: record-native
+            artifact: Record-linux-x64.tar.gz
+          - name: macos-x64
+            os: macos-13
+            binary: record-native
+            artifact: Record-macos-x64.tar.gz
+          - name: macos-arm64
+            os: macos-14
+            binary: record-native
+            artifact: Record-macos-arm64.tar.gz
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Linux desktop libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libx11-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxkbcommon-dev \
+            libwayland-dev \
+            libgl1-mesa-dev \
+            pkg-config
+
+      - name: Test native app
+        run: cargo test --manifest-path native-record/Cargo.toml
+
+      - name: Build native app
+        run: cargo build --release --manifest-path native-record/Cargo.toml
+
+      - name: Package Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force release | Out-Null
+          Copy-Item native-record/target/release/${{ matrix.binary }} release/Record.exe
+          Compress-Archive -Path release/Record.exe -DestinationPath ${{ matrix.artifact }} -Force
+
+      - name: Package Linux
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          mkdir -p release
+          cp native-record/target/release/${{ matrix.binary }} release/Record
+          chmod +x release/Record
+          tar -czf ${{ matrix.artifact }} -C release Record
+
+      - name: Package macOS app
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          app_dir="release/Record.app"
+          mkdir -p "$app_dir/Contents/MacOS" "$app_dir/Contents/Resources"
+          cp native-record/target/release/${{ matrix.binary }} "$app_dir/Contents/MacOS/Record"
+          chmod +x "$app_dir/Contents/MacOS/Record"
+          cp src-tauri/icons/icon.icns "$app_dir/Contents/Resources/Record.icns"
+          cat > "$app_dir/Contents/Info.plist" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleDevelopmentRegion</key>
+            <string>zh_CN</string>
+            <key>CFBundleDisplayName</key>
+            <string>Record</string>
+            <key>CFBundleExecutable</key>
+            <string>Record</string>
+            <key>CFBundleIconFile</key>
+            <string>Record</string>
+            <key>CFBundleIdentifier</key>
+            <string>com.record.native</string>
+            <key>CFBundleInfoDictionaryVersion</key>
+            <string>6.0</string>
+            <key>CFBundleName</key>
+            <string>Record</string>
+            <key>CFBundlePackageType</key>
+            <string>APPL</string>
+            <key>CFBundleShortVersionString</key>
+            <string>0.1.0</string>
+            <key>CFBundleVersion</key>
+            <string>0.1.0</string>
+            <key>LSMinimumSystemVersion</key>
+            <string>11.0</string>
+            <key>NSHighResolutionCapable</key>
+            <true/>
+          </dict>
+          </plist>
+          PLIST
+          tar -czf ${{ matrix.artifact }} -C release Record.app
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ matrix.artifact }}

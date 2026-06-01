@@ -1,29 +1,44 @@
 # Record
 
-Record is a compact local task panel. The repo contains two runnable builds:
+Record is a compact local task panel. The recommended distributable is the native build in `native-record`, which does not use WebView, Node, Tauri, or a browser shell at runtime.
 
-- `src-tauri`: Tauri + React version with an NSIS installer.
-- `native-record`: native Rust/egui version for a single executable without WebView startup cost.
+## User Downloads
 
-## Tauri Commands
+There is no single binary that can run on every operating system, because Windows, Linux, and macOS use different executable formats. The no-environment release model is:
 
-- `npm run dev` starts the Vite frontend.
-- `npm run tauri dev` starts the desktop app in development mode.
-- `npm run test` runs the React and task-helper tests.
-- `npm run build` builds the frontend.
-- `npm run tauri build` builds the app and a single-file NSIS installer.
+- Windows users download `Record-windows-x64.zip` and run `Record.exe`.
+- Linux users download `Record-linux-x64.tar.gz`, extract it, and run `Record`.
+- macOS Intel users download `Record-macos-x64.tar.gz`, extract it, and run `Record.app`.
+- macOS Apple Silicon users download `Record-macos-arm64.tar.gz`, extract it, and run `Record.app`.
 
-Task data is stored locally in the app data directory as `tasks.json`.
+Users do not need Rust, Node.js, npm, Tauri, or a development environment.
 
-The Windows NSIS installer explicitly bundles `WebView2Loader.dll` next to `record.exe`, so the installed app can start without requiring that loader to be present on `PATH`.
+## Release Build
 
-The main window starts hidden and is shown only after the first local task load finishes, which avoids displaying an unfinished WebView during startup.
+The GitHub Actions workflow `.github/workflows/native-release.yml` builds all supported desktop packages automatically on the correct operating systems. Run the `native-release` workflow manually, or push a tag such as `v0.1.0`.
 
-## Native Single-File Commands
+Artifacts produced by the workflow:
 
-- `cargo test --manifest-path native-record/Cargo.toml` runs the native task-store tests.
-- `cargo build --release --manifest-path native-record/Cargo.toml` builds the native executable.
+- `Record-windows-x64.zip`
+- `Record-linux-x64.tar.gz`
+- `Record-macos-x64.tar.gz`
+- `Record-macos-arm64.tar.gz`
 
-The native Windows executable is generated at `native-record/target/release/record-native.exe`.
+## Local Developer Commands
 
-The native build does not use WebView2 or a browser shell. The app icon is embedded from `src-tauri/icons/icon.ico`, and the runtime window icon is embedded from `src-tauri/icons/icon.png`.
+Native app:
+
+```powershell
+cargo test --manifest-path native-record/Cargo.toml
+cargo build --release --manifest-path native-record/Cargo.toml
+```
+
+Windows native executable:
+
+```text
+native-record/target/release/record-native.exe
+```
+
+Tauri/React is kept in `src-tauri` and `src` as an optional webview-based build, but the native build is the preferred no-environment distribution path.
+
+Task data is stored locally in the OS app-data directory as `Record/tasks.json`.

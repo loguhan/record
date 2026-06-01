@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "native:test": "cargo test --manifest-path native-record/Cargo.toml",
+    "native:build": "cargo build --release --manifest-path native-record/Cargo.toml"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.3",

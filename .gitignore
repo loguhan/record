@@ -10,6 +10,10 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+target
+src-tauri/target
+native-record/target
+release-artifacts
 *.local
 
 # Editor directories and files
