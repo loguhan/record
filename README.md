@@ -8,8 +8,7 @@ There is no single binary that can run on every operating system, because Window
 
 - Windows users download `Record-windows-x64.zip` and run `Record.exe`.
 - Linux users download `Record-linux-x64.tar.gz`, extract it, and run `Record`.
-- macOS Intel users download `Record-macos-x64.tar.gz`, extract it, and run `Record.app`.
-- macOS Apple Silicon users download `Record-macos-arm64.tar.gz`, extract it, and run `Record.app`.
+- macOS users download `Record-macos-universal.tar.gz`, extract it, and run `Record.app`.
 
 Users do not need Rust, Node.js, npm, Tauri, or a development environment.
 
@@ -21,8 +20,7 @@ Artifacts produced by the workflow:
 
 - `Record-windows-x64.zip`
 - `Record-linux-x64.tar.gz`
-- `Record-macos-x64.tar.gz`
-- `Record-macos-arm64.tar.gz`
+- `Record-macos-universal.tar.gz`
 
 ## Local Developer Commands
 
