@@ -1,4 +1,6 @@
 fn main() {
+    println!("cargo:rerun-if-changed=../src-tauri/icons/icon.ico");
+
     #[cfg(windows)]
     {
         let mut resource = winresource::WindowsResource::new();
